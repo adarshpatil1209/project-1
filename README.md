@@ -1,4 +1,4 @@
-# blahblah# 🎓 Campus Lost & Found
+🎓 Campus Lost & Found
 
 ### A Smart Campus-Based Lost and Found Platform
 

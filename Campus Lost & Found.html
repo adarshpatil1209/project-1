@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campus Lost &amp; Found</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mut:#667085;--bd:#e4e7ee;--pri:#4f46e5;--lost:#e5484d;--found:#12a150;--sh:0 4px 18px rgba(20,25,50,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1117;--card:#181b24;--tx:#eceef4;--mut:#9aa3b5;--bd:#2a2f3c;--pri:#818cf8;--sh:none}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1117;--card:#181b24;--tx:#eceef4;--mut:#9aa3b5;--bd:#2a2f3c;--pri:#818cf8;--sh:none}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--card);border-bottom:1px solid var(--bd);z-index:5}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:10px}
+.logo{font-weight:800;font-size:18px}.links{display:flex;gap:6px;flex-wrap:wrap}
+.links a{color:var(--mut);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:14px;font-weight:600}.links a:hover{background:var(--bg);color:var(--tx)}
+.hero{padding:56px 0 34px;text-align:center}
+.hero h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+.hero h1 span{color:var(--pri)}.hero p{color:var(--mut);max-width:560px;margin:0 auto 24px}
+.btn{border:0;background:var(--pri);color:#fff;padding:11px 20px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.o{background:transparent;color:var(--tx);border:1px solid var(--bd)}.btn.l{background:var(--lost)}.btn.f{background:var(--found)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--sh)}
+.stat b{display:block;font-size:28px}.stat small{color:var(--mut)}
+h2{font-size:24px;margin:38px 0 14px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;width:100%}
+.bar input{flex:2 1 220px;width:auto}.bar select{flex:1 1 140px;width:auto}
+.tabs{display:flex;gap:6px;margin-bottom:14px}.tab{padding:7px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;font-weight:600;font-size:14px}
+.tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:var(--sh);transition:transform .15s}
+.card:hover{transform:translateY(-3px)}.ph{height:150px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:44px}
+.ph img{width:100%;height:100%;object-fit:cover}.cb{padding:14px}.cb h3{margin:6px 0 4px;font-size:16px}.cb p{margin:0;color:var(--mut);font-size:13px}
+.badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;color:#fff;text-transform:uppercase}.badge.lost{background:var(--lost)}.badge.found{background:var(--found)}.badge.done{background:var(--mut)}
+form.box,.modal>div{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:13px;font-weight:700;margin:12px 0 5px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+.modal.on{display:flex}.modal>div{max-width:480px;width:100%;max-height:90vh;overflow:auto}
+.modal img.big{width:100%;border-radius:10px;max-height:240px;object-fit:cover;margin-bottom:10px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:30}.toast.on{opacity:1}
+.empty{text-align:center;color:var(--mut);padding:40px 0;grid-column:1/-1}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:40px 0}
+@media(max-width:560px){.row{grid-template-columns:1fr}.links a:nth-child(n+4){display:none}}
+</style></head><body>
+<nav><div class="wrap"><div class="logo">🎓 Campus Lost &amp; Found</div>
+<div class="links"><a href="#browse">Browse</a><a href="#report">Report</a><a href="#how">How it works</a><button class="tab" id="th" aria-label="Toggle theme">🌓</button></div></div></nav>
+
+<header class="hero wrap"><h1>Lost something on campus?<br><span>Let’s get it back to you.</span></h1>
+<p>One place for lost and found items — no more scrolling through WhatsApp groups and notice boards.</p>
+<a class="btn l" href="#report" data-t="lost">I lost something</a> <a class="btn f" href="#report" data-t="found">I found something</a>
+<div class="stats"><div class="stat"><b id="s1">0</b><small>Lost reports</small></div><div class="stat"><b id="s2">0</b><small>Found reports</small></div><div class="stat"><b id="s3">0</b><small>Returned to owners</small></div></div></header>
+
+<main class="wrap">
+<section id="browse"><h2>Browse items</h2>
+<div class="bar"><input id="q" placeholder="Search e.g. wallet, ID card, blue bottle…"><select id="cat"></select></div>
+<div class="tabs" id="tabs"><button class="tab on" data-v="all">All</button><button class="tab" data-v="lost">Lost</button><button class="tab" data-v="found">Found</button></div>
+<div class="grid" id="grid"></div></section>
+
+<section id="report"><h2>Report an item</h2>
+<form class="box" id="form">
+<div class="tabs"><button type="button" class="tab on" data-r="lost">I lost it</button><button type="button" class="tab" data-r="found">I found it</button></div>
+<label>Item title *</label><input name="title" required maxlength="60" placeholder="Black leather wallet">
+<div class="row"><div><label>Category *</label><select name="cat" id="fcat"></select></div><div><label>Date *</label><input type="date" name="date" required></div></div>
+<label>Location on campus *</label><input name="loc" required placeholder="Library, 2nd floor">
+<label>Description</label><textarea name="desc" rows="3" maxlength="300" placeholder="Colour, brand, identifying marks (keep one detail private to verify the owner)"></textarea>
+<div class="row"><div><label>Your name *</label><input name="name" required></div><div><label>Contact (email / phone) *</label><input name="contact" required></div></div>
+<label>Photo (optional)</label><input type="file" id="img" accept="image/*">
+<p style="margin:16px 0 0"><button class="btn" id="sub">Submit report</button></p></form></section>
+
+<section id="how"><h2>How it works</h2><div class="grid">
+<div class="stat">📝<br><b style="font-size:17px">1. Report</b><small>Post what you lost or found with a photo.</small></div>
+<div class="stat">🔎<br><b style="font-size:17px">2. Search</b><small>Filter by category and keyword.</small></div>
+<div class="stat">🤝<br><b style="font-size:17px">3. Claim</b><small>Send a claim with proof; the reporter verifies.</small></div></div></section>
+</main>
+<footer>Built with ❤️ by Team Code X · Educational &amp; hackathon project</footer>
+
+<div class="modal" id="md"><div id="mc"></div></div><div class="toast" id="ts"></div>
+
+<script>
+const CATS=["ID Card","Wallet","Books","Bag","Bottle","Electronics","Keys","Clothing","Other"];
+const ICON={"ID Card":"🪪","Wallet":"👛","Books":"📚","Bag":"🎒","Bottle":"🧴","Electronics":"🎧","Keys":"🔑","Clothing":"🧥","Other":"📦"};
+/* ---- Data layer: swap these 3 functions for Supabase/Firebase calls (see schema file) ---- */
+const KEY="clf_items_v1";
+const DB={
+  load(){try{const d=localStorage.getItem(KEY);if(d)return JSON.parse(d)}catch(e){}return seed()},
+  save(a){try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){}},
+};
+function seed(){const d=n=>new Date(Date.now()-n*864e5).toISOString().slice(0,10);
+return [
+{id:1,type:"lost",title:"Blue Hydro Flask bottle",cat:"Bottle",date:d(1),loc:"Canteen",desc:"Dent near the base, sticker of a cat.",name:"Riya",contact:"riya@college.edu",status:"open",claims:[]},
+{id:2,type:"found",title:"Student ID card",cat:"ID Card",date:d(2),loc:"Main gate",desc:"Found on the footpath. Collect with another ID.",name:"Karan",contact:"9800000000",status:"open",claims:[]},
+{id:3,type:"found",title:"Black wireless earbuds",cat:"Electronics",date:d(3),loc:"Library, 2nd floor",desc:"Case with a small scratch.",name:"Sneha",contact:"sneha@college.edu",status:"open",claims:[]},
+{id:4,type:"lost",title:"Data Structures textbook",cat:"Books",date:d(4),loc:"Lecture Hall B",desc:"Name written on the first page.",name:"Aman",contact:"aman@college.edu",status:"open",claims:[]},
+{id:5,type:"found",title:"Brown leather wallet",cat:"Wallet",date:d(6),loc:"Sports ground",desc:"Contains some cards.",name:"Priya",contact:"priya@college.edu",status:"returned",claims:[]}]}
+let items=DB.load(),view="all",rtype="lost",img="";
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fill=(el,all)=>el.innerHTML=(all?'<option value="">All categories</option>':'')+CATS.map(c=>`<option>${c}</option>`).join("");
+fill($("#cat"),1);fill($("#fcat"));
+function toast(m){const t=$("#ts");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400)}
+function render(){
+  const q=$("#q").value.toLowerCase(),c=$("#cat").value;
+  const list=items.filter(i=>(view==="all"||i.type===view)&&(!c||i.cat===c)&&(!q||(i.title+i.desc+i.loc+i.cat).toLowerCase().includes(q))).sort((a,b)=>b.id-a.id);
+  $("#grid").innerHTML=list.length?list.map(i=>`<div class="card" data-id="${i.id}"><div class="ph">${i.img?`<img src="${i.img}" alt="">`:ICON[i.cat]||"📦"}</div><div class="cb"><span class="badge ${i.status==="returned"?"done":i.type}">${i.status==="returned"?"Returned":i.type}</span><h3>${esc(i.title)}</h3><p>📍 ${esc(i.loc)} · ${esc(i.date)}</p></div></div>`).join(""):'<div class="empty">No items match. Try another search.</div>';
+  $("#s1").textContent=items.filter(i=>i.type==="lost").length;$("#s2").textContent=items.filter(i=>i.type==="found").length;$("#s3").textContent=items.filter(i=>i.status==="returned").length;
+}
+function open_(html){$("#mc").innerHTML=html;$("#md").classList.add("on")}
+function close_(){$("#md").classList.remove("on")}
+function detail(id){const i=items.find(x=>x.id==id);if(!i)return;
+  open_(`${i.img?`<img class="big" src="${i.img}" alt="">`:""}<span class="badge ${i.status==="returned"?"done":i.type}">${i.status==="returned"?"Returned":i.type}</span>
+  <h2 style="margin:8px 0">${esc(i.title)}</h2><p style="color:var(--mut);margin:0 0 8px">${esc(i.cat)} · 📍 ${esc(i.loc)} · ${esc(i.date)}</p><p>${esc(i.desc)||"No description."}</p>
+  <p><b>Reported by:</b> ${esc(i.name)}<br><b>Contact:</b> <span id="ct" data-c="${esc(i.contact)}">Tap reveal to show</span></p>
+  <p style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn o" id="rv">Reveal contact</button>${i.status==="open"?`<button class="btn" id="cl">${i.type==="found"?"This is mine – claim":"I found this"}</button>`:""}<button class="btn o" id="x">Close</button></p>`);
+  $("#rv").onclick=()=>{const e=$("#ct");e.textContent=e.dataset.c};$("#x").onclick=close_;
+  const cl=$("#cl");if(cl)cl.onclick=()=>claim(i);}
+function claim(i){open_(`<h2 style="margin:0 0 4px">Submit claim</h2><p style="color:var(--mut);margin:0">${esc(i.title)}</p>
+  <form id="cf"><label>Your name *</label><input name="n" required><label>Contact *</label><input name="c" required>
+  <label>Proof of ownership *</label><textarea name="p" rows="3" required placeholder="Describe a detail only the owner would know"></textarea>
+  <p style="display:flex;gap:8px"><button class="btn">Send claim</button><button type="button" class="btn o" id="x">Cancel</button></p></form>`);
+  $("#x").onclick=close_;
+  $("#cf").onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);i.claims.push({n:f.get("n"),c:f.get("c"),p:f.get("p"),at:Date.now()});DB.save(items);close_();toast("Claim sent to the reporter ✔")}}
+function resize(file){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=480,s=Math.min(1,m/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=im.width*s;cv.height=im.height*s;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);r(cv.toDataURL("image/jpeg",.7))};im.onerror=()=>r("");im.src=fr.result};fr.onerror=()=>r("");fr.readAsDataURL(file)})}
+$("#img").onchange=async e=>{img=e.target.files[0]?await resize(e.target.files[0]):""};
+$("#form").onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+  items.push({id:Date.now(),type:rtype,title:f.title.trim(),cat:f.cat,date:f.date,loc:f.loc.trim(),desc:f.desc.trim(),name:f.name.trim(),contact:f.contact.trim(),img,status:"open",claims:[]});
+  DB.save(items);e.target.reset();img="";render();toast("Report posted ✔");location.hash="browse"};
+$("#grid").onclick=e=>{const c=e.target.closest(".card");if(c)detail(c.dataset.id)};
+$("#md").onclick=e=>{if(e.target.id==="md")close_()};
+$("#q").oninput=render;$("#cat").onchange=render;
+$("#tabs").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;view=b.dataset.v;document.querySelectorAll("#tabs .tab").forEach(t=>t.classList.toggle("on",t===b));render()};
+$("#form .tabs").onclick=e=>{const b=e.target.closest("[data-r]");if(!b)return;rtype=b.dataset.r;document.querySelectorAll("#form .tabs .tab").forEach(t=>t.classList.toggle("on",t===b))};
+document.querySelectorAll("[data-t]").forEach(a=>a.onclick=()=>{rtype=a.dataset.t;document.querySelectorAll("#form .tabs .tab").forEach(t=>t.classList.toggle("on",t.dataset.r===rtype))});
+$("#th").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).colorScheme.includes("dark");r.dataset.theme=d?"light":"dark"};
+document.querySelector('[name=date]').valueAsDate=new Date();
+render();
+</script></body></html>
